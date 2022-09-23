@@ -6,8 +6,8 @@ public class Tag
 
     [Required]
     [StringLength(50)]
-    public string Name;
+    public string Name = null!;
     
-    
-    public IEnumerable<Task> Tasks;
+
+    public IEnumerable<Task> Tasks = null!;
 }
