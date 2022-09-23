@@ -1,7 +1,7 @@
 * Group 1: aing, frepe, frjo
-* Group 2: base, laku, oljh
+* Group 2: base, skas, oljh
 * Group 3: lanr, hecn, luel
-* Group 4: skas, raoo, erja
+* Group 4: laku, raoo, erja
 * Group 5: rafa, jouj, bemi
 * Group 6: jacg, lufr, mfjo
 * Group 7: annro, atro, monha
