@@ -49,6 +49,17 @@ public class UserRepositoryTests : IDisposable
     }
 
     [Fact]
+    public void Create_returns_conflict_response_given_same_email() {
+        //Arrange
+        var user = new UserCreateDTO("Henrik", "poul@thepoul.dk");
+
+        //act
+        var actual = _repository.Create(user);
+        //assert
+        actual.Should().Be((Response.Conflict, 0));
+    }
+
+    [Fact]
     public void Delete_returns_deleted_response_given_userId() {
         
 
