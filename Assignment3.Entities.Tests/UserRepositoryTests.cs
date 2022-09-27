@@ -30,6 +30,7 @@ public class UserRepositoryTests : IDisposable
             Email = "jens@thejensen.dk"
         };
         context.Add(user);
+        context.Add(user2);
         context.SaveChanges();
 
         _context = context;
@@ -44,7 +45,7 @@ public class UserRepositoryTests : IDisposable
         //act
         var actual = _repository.Create(user);
         //assert
-        actual.Should().Be((Response.Created, 2));
+        actual.Should().Be((Response.Created, 3));
     }
 
     [Fact]
@@ -70,7 +71,7 @@ public class UserRepositoryTests : IDisposable
     public void ReadAll_returns_all_users() {
         var actual = _repository.ReadAll();
         actual.Should().BeEquivalentTo(new[] {
-            new UserDTO(1,"Poul Poulsen", "poul@thepoul.dk")
+            new UserDTO(1,"Poul Poulsen", "poul@thepoul.dk"), new UserDTO(2, "Jens Jensen", "jens@thejensen.dk")
         });
     }
 
