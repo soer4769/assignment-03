@@ -83,6 +83,30 @@ public class UserRepositoryTests : IDisposable
         actual.Should().Be(Response.Updated);
     }
 
+    [Fact]
+    public void Read_returns_null_given_MaxValue_userid() {
+        
+        var actual = _repository.Read(int.MaxValue);
+
+        actual.Should().Be(null);
+    }
+
+    [Fact]
+    public void Delete_notfound_null_given_MaxValue_userid() {
+        
+        var actual = _repository.Delete(int.MaxValue);
+
+        actual.Should().Be(Response.NotFound);
+    }
+
+    [Fact]
+    public void Update_returns_notfound_given_maxvalue_userID() {
+        var newUser = new UserUpdateDTO(int.MaxValue, "Poul Poulsen", "poulcool@thepoul.dk");
+        var actual = _repository.Update(newUser);
+
+        actual.Should().Be(Response.NotFound);
+    }
+
     public void Dispose()
     {
         _context.Dispose();
