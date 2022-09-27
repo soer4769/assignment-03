@@ -7,12 +7,9 @@ public class Task
 {
     public int Id { get; set; }
 
-    [Required]
-    [StringLength(100)]
     public string Title
     { get; set; } = null!;
     
-    [Required]
     public State State { get; set; }
     
     public User? AssignedTo { get; set; }
