@@ -36,6 +36,14 @@ public class KanbanContext : DbContext
             .Property(t => t.State)
             .IsRequired();
 
+        modelBuilder.Entity<Tag>()
+            .Property(t => t.Name)
+            .HasMaxLength(50)
+            .IsRequired();
+
+        modelBuilder.Entity<Tag>()
+            .HasIndex(t => t.Name)
+            .IsUnique();
     }
 
 }
