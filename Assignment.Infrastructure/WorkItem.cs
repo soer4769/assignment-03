@@ -17,7 +17,7 @@ public class WorkItem
     public IReadOnlyCollection<Tag> Tags 
     { get; set; } = null!;
 
-    public DateTime created { get; set; }
+    public DateTime Created { get; set; }
 
     public DateTime StateUpdated { get; set; }
 }

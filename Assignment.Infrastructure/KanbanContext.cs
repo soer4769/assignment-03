@@ -14,7 +14,7 @@ public class KanbanContext : DbContext
 
     public virtual DbSet<Tag> Tags => Set<Tag>();
 
-    public virtual DbSet<WorkItem> Tasks => Set<WorkItem>();
+    public virtual DbSet<WorkItem> WorkItems => Set<WorkItem>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

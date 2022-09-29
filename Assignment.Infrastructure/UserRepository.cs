@@ -39,6 +39,13 @@ public class UserRepository : IUserRepository
         } 
         
         bool AssignedToTask = false;
+        foreach(var task in user.Tasks) {
+            if (task.State == State.Active) {
+                AssignedToTask = true;
+                break;
+            }
+        }
+
         if(AssignedToTask && !force) 
         {
             return Response.Conflict;
@@ -47,6 +54,7 @@ public class UserRepository : IUserRepository
         _context.Users.Remove(user!);
         return Response.Deleted;
     }
+    
 
     public UserDTO? Find(int userId)
     {
@@ -56,6 +64,11 @@ public class UserRepository : IUserRepository
 
     public IReadOnlyCollection<UserDTO> Read()
     {
+        if (!_context.Users.Any())
+        {
+            return null!;
+        }
+        
         var users = from u in _context.Users
                     select new UserDTO(u.Id, u.Name, u.Email);
 
@@ -71,6 +84,5 @@ public class UserRepository : IUserRepository
         _context.SaveChanges();
 
         return Response.Updated;
-
     }
 }
