@@ -33,22 +33,22 @@ public class WorkItemRepository : IWorkItemRepository
 
     public IReadOnlyCollection<WorkItemDTO> ReadRemoved()
     {
-        throw new NotImplementedException();
+        return this.ReadByState(State.Removed);
     }
 
     public IReadOnlyCollection<WorkItemDTO> ReadByTag(string tag)
     {
-        throw new NotImplementedException();
+        return (from t in this.Read() where t.Tags.Contains(tag) select t).ToList();
     }
 
     public IReadOnlyCollection<WorkItemDTO> ReadByUser(int userId)
     {
-        throw new NotImplementedException();
+        return (from t in this.Read() where t.Id == userId select t).ToList();
     }
 
     public IReadOnlyCollection<WorkItemDTO> ReadByState(Core.State state)
     {
-        throw new NotImplementedException();
+        return (from t in this.Read() where t.State == state select t).ToList();
     }
 
     public IReadOnlyCollection<WorkItemDTO> Read()

@@ -23,8 +23,12 @@ public class WorkItemRepositoryTests : IDisposable
             Email = "poul@thepoul.dk"
         });
 
-        var task = new WorkItem {Id = 1, Title = "Spaghetti", AssignedTo = context.Users.Find(1)};
-        var task2 = new WorkItem {Id = 2, Title = "Meatballs", AssignedTo = context.Users.Find(1)};
+        var tag1 = new Tag();
+        tag1.Id = 0;
+        tag1.Name = "eat cake";
+
+        var task = new WorkItem {Id = 1, Title = "Spaghetti", AssignedTo = context.Users.Find(1), Tags = new List<Tag>{tag1}, State = State.New};
+        var task2 = new WorkItem {Id = 2, Title = "Meatballs", AssignedTo = context.Users.Find(1), State = State.Removed};
 
         context.Add(task);
         context.Add(task2);
@@ -45,8 +49,7 @@ public class WorkItemRepositoryTests : IDisposable
         var actual = _repository.Create(task);
 
         // Assert
-        actual.Should()
-            .Be((Response.Created, 3));
+        actual.Should().Be((Response.Created, 3));
     }
 
     [Fact]
@@ -54,9 +57,41 @@ public class WorkItemRepositoryTests : IDisposable
     {
         var actual = _repository.Read();
         actual.Should().BeEquivalentTo(new[]{
-            new WorkItemDTO(1, "Spaghetti", "Poul Poulsen", new List<string>().AsReadOnly(), State.New),
-            new WorkItemDTO(2, "Meatballs", "Poul Poulsen", new List<string>().AsReadOnly(), State.New)
+            new WorkItemDTO(1, "Spaghetti", "Poul Poulsen", new List<string>{"eat cake"}.AsReadOnly(), State.New),
+            new WorkItemDTO(2, "Meatballs", "Poul Poulsen", new List<string>().AsReadOnly(), State.Removed)
         });
+    }
+
+    [Fact]
+    public void ReadRemoved_returns_meatballs()
+    {
+        var actual = _repository.ReadRemoved();
+        actual.Should().BeEquivalentTo(new[]{
+            new WorkItemDTO(2, "Meatballs", "Poul Poulsen", new List<string>().AsReadOnly(), State.Removed)
+        });
+    }
+
+    [Fact]
+    public void ReadByUser_returns_1()
+    {
+        var actual = _repository.ReadByUser(1);
+        actual.First().Id.Should().Be(1);
+    }
+
+    [Fact]
+    public void ReadByState_returns_new()
+    {
+        var actual = _repository.ReadByState(State.New);
+        actual.Should().BeEquivalentTo(new[]{
+            new WorkItemDTO(1, "Spaghetti", "Poul Poulsen", new List<string>{"eat cake"}.AsReadOnly(), State.New)
+        });
+    }
+
+    [Fact]
+    public void ReadByTag_returns_1()
+    {
+        var actual = _repository.ReadByTag("eat cake");
+        actual.First().Id.Should().Be(1);
     }
 
     public void Dispose()
