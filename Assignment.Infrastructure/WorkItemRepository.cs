@@ -22,6 +22,13 @@ public class WorkItemRepository : IWorkItemRepository
         entity.AssignedTo = assignedUser;
         entity.Tags = tags;
 
+        var taskExists = _context.Tasks.FirstOrDefault(t => t.Id == entity.Id) != null;
+        
+        if(taskExists)
+        {
+            return (Response.Conflict, 0);
+        }
+
         _context.Tasks.Add(entity);
         _context.SaveChanges();
 
@@ -61,12 +68,20 @@ public class WorkItemRepository : IWorkItemRepository
 
     public Response Update(WorkItemUpdateDTO workitem)
     {
-        var updateQuery = _context.Tasks.FirstOrDefault(u => u.Id == workitem.Id);
         
-        updateQuery!.State = State.Active;
-        updateQuery.Title = "what";
-
-        _context.Tasks.Update(updateQuery);
+        var entity = _context.Tasks.Find(workitem.Id);
+        
+        if(entity == null) return Response.NotFound;
+        
+        var assignedUser = _context.Users.FirstOrDefault(u => u.Id == workitem.AssignedToId);
+        entity.Title = workitem.Title;
+        entity.Description = workitem.Description;
+        entity.AssignedTo = assignedUser;
+        entity.Tags = workitem.Tags.Select(x => new Tag {Name = x})
+            .ToList();
+        entity.State = workitem.State;
+        
+        _context.SaveChanges();
         
         return Response.Updated;
     }
@@ -87,6 +102,13 @@ public class WorkItemRepository : IWorkItemRepository
 
     public WorkItemDetailsDTO Find(int workItemId)
     {
+        var taskNotExists = _context.Tasks.FirstOrDefault(t => t.Id == workItemId) == null;
+
+        if (taskNotExists)
+        {
+            return null!;
+        }
+        
         var workitem = from t in _context.Tasks where t.Id == workItemId 
         select new WorkItemDetailsDTO(t.Id, t.Title, t.Description, t.created, t.AssignedTo.Name, t.Tags.Select(x => x.Name).ToList(), t.State, t.StateUpdated);
         return workitem.First();

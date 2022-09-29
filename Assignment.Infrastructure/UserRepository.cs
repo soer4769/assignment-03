@@ -16,7 +16,7 @@ public class UserRepository : IUserRepository
         entity.Email = user.Email;
         entity.Name = user.Name;
 
-        var userExists = _context.Users.FirstOrDefault(u => u.Email == user.Email) != null ? true : false;
+        var userExists = _context.Users.FirstOrDefault(u => u.Email == user.Email) != null;
         if(userExists) 
         {
             return (Response.Conflict, 0);

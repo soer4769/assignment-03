@@ -1,6 +1,5 @@
 global using Microsoft.Data.Sqlite;
 global using Microsoft.EntityFrameworkCore;
-using System.Collections.ObjectModel;
 
 namespace Assignment.Infrastructure.Tests;
 
@@ -92,6 +91,38 @@ public class WorkItemRepositoryTests : IDisposable
     {
         var actual = _repository.ReadByTag("eat cake");
         actual.First().Id.Should().Be(1);
+    }
+
+    [Fact]
+    public void Update_returns_notfound_given_maxvalue_id()
+    {
+        var newWorkItem = new WorkItemUpdateDTO(int.MaxValue, "lol", null, null, new List<string>{"hello"}, State.New);
+        var actual = _repository.Update(newWorkItem);
+
+        actual.Should().Be(Response.NotFound);
+    }
+    
+    [Fact]
+    public void Update_returns_update_response()
+    {
+        var newWorkItem = new WorkItemUpdateDTO(1, "Work harder", _context.Users.Find(1)!.Id, null, new List<string>{"Max"}, State.Closed);
+        var actual = _repository.Update(newWorkItem);
+
+        actual.Should().Be(Response.Updated);
+    }
+    
+    [Fact]
+    public void Delete_returns_deleted_response_given_userId()
+    {
+        var actual = _repository.Delete(1);
+        actual.Should().Be(Response.Deleted);
+    }
+    
+    [Fact]
+    public void Delete_returns_notfound_null_given_MaxValue_userId() {
+        
+        var actual = _repository.Delete(int.MaxValue);
+        actual.Should().Be(Response.NotFound);
     }
 
     public void Dispose()
