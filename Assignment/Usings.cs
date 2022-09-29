@@ -1,2 +1,2 @@
-global using Assignment3;
+global using Assignment;
 global using Microsoft.Data.SqlClient;

@@ -8,12 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Assignment3.Core\Assignment3.Core.csproj" />
-    <ProjectReference Include="..\Assignment3.Entities\Assignment3.Entities.csproj" />
+    <ProjectReference Include="..\Assignment.Core\Assignment3.Core.csproj" />
+    <ProjectReference Include="..\Assignment.Infrastructure\Assignment.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Assignment3.Core\Assignment3.Core.csproj" />
+    <ProjectReference Include="..\Assignment.Core\Assignment.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

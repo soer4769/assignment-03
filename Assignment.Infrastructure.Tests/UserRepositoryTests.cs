@@ -1,9 +1,7 @@
-namespace Assignment3.Entities.Tests;
+namespace Assignment.Infrastructure.Tests;
 
 public class UserRepositoryTests : IDisposable
 {
-
-    
     private readonly KanbanContext _context;
     private readonly UserRepository _repository;
 
@@ -68,16 +66,16 @@ public class UserRepositoryTests : IDisposable
     [Fact]
     public void Read_returns_UserDTO_given_userId() {
 
-        var actual = _repository.Read(1);
+        var actual = _repository.Read();
 
         var expected = new UserDTO(1, "Poul Poulsen", "poul@thepoul.dk");
 
-        actual.Should().Be(expected);
+        actual.First().Should().Be(expected);
     }
 
     [Fact]
-    public void ReadAll_returns_all_users() {
-        var actual = _repository.ReadAll();
+    public void Read_returns_all_users() {
+        var actual = _repository.Read();
         actual.Should().BeEquivalentTo(new[] {
             new UserDTO(1,"Poul Poulsen", "poul@thepoul.dk"), new UserDTO(2, "Jens Jensen", "jens@thejensen.dk")
         });
@@ -89,14 +87,6 @@ public class UserRepositoryTests : IDisposable
         var actual = _repository.Update(newUser);
 
         actual.Should().Be(Response.Updated);
-    }
-
-    [Fact]
-    public void Read_returns_null_given_MaxValue_userid() {
-        
-        var actual = _repository.Read(int.MaxValue);
-
-        actual.Should().Be(null);
     }
 
     [Fact]

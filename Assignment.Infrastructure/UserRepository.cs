@@ -1,4 +1,4 @@
-namespace Assignment3.Entities;
+namespace Assignment.Infrastructure;
 
 public class UserRepository : IUserRepository
 {
@@ -46,13 +46,13 @@ public class UserRepository : IUserRepository
         return Response.Deleted;
     }
 
-    public UserDTO? Read(int userId)
+    public UserDTO? Find(int userId)
     {
         var ReadUser = _context.Users.FirstOrDefault(u => u.Id == userId);
         return ReadUser == null ? null : new UserDTO(ReadUser.Id, ReadUser.Name, ReadUser.Email);
     }
 
-    public IReadOnlyCollection<UserDTO> ReadAll()
+    public IReadOnlyCollection<UserDTO> Read()
     {
         var users = from u in _context.Users
                     select new UserDTO(u.Id, u.Name, u.Email);

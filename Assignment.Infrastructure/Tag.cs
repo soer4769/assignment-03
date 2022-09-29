@@ -1,4 +1,4 @@
-namespace Assignment3.Entities;
+namespace Assignment.Infrastructure;
 
 public class Tag
 {
@@ -6,5 +6,5 @@ public class Tag
 
     public string Name = null!;
     
-    public IEnumerable<Task> Tasks = null!;
+    public IEnumerable<WorkItem> Tasks = null!;
 }

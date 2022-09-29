@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace Assignment3.Entities;
+namespace Assignment.Infrastructure;
 
 public class KanbanContext : DbContext
 {
@@ -14,7 +14,7 @@ public class KanbanContext : DbContext
 
     public virtual DbSet<Tag> Tags => Set<Tag>();
 
-    public virtual DbSet<Task> Tasks => Set<Task>();
+    public virtual DbSet<WorkItem> Tasks => Set<WorkItem>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,12 +32,12 @@ public class KanbanContext : DbContext
             .HasMaxLength(100)
             .IsRequired();
 
-        modelBuilder.Entity<Task>()
+        modelBuilder.Entity<WorkItem>()
             .Property(t => t.Title)
             .HasMaxLength(100)
             .IsRequired();
 
-        modelBuilder.Entity<Task>()
+        modelBuilder.Entity<WorkItem>()
             .Property(t => t.State)
             .IsRequired()
             .HasConversion(

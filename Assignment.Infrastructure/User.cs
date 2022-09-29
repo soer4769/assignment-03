@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace Assignment3.Entities;
+namespace Assignment.Infrastructure;
 
 public class User
 {
@@ -11,6 +11,6 @@ public class User
     
     public string Email { get; set; } = null!;
 
-    public IEnumerable<Task> Tasks { get; set; } = null!;
+    public IEnumerable<WorkItem> Tasks { get; set; } = null!;
 
 }

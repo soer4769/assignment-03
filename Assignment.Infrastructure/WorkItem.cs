@@ -1,7 +1,7 @@
-namespace Assignment3.Entities;
+namespace Assignment.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 
-public class Task
+public class WorkItem
 {
     public int Id { get; set; }
 

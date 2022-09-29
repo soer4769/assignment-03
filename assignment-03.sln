@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment3", "Assignment3\Assignment3.csproj", "{783EA93D-C637-4201-8528-8DEA89407149}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment", "Assignment\Assignment.csproj", "{783EA93D-C637-4201-8528-8DEA89407149}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment3.Core", "Assignment3.Core\Assignment3.Core.csproj", "{47805A28-2797-455B-855F-C86559B27B57}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment.Core", "Assignment.Core\Assignment.Core.csproj", "{47805A28-2797-455B-855F-C86559B27B57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment3.Entities", "Assignment3.Entities\Assignment3.Entities.csproj", "{CBA647C9-1218-493B-B3C9-3D7E20E08685}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment.Infrastructure", "Assignment.Infrastructure\Assignment.Infrastructure.csproj", "{CBA647C9-1218-493B-B3C9-3D7E20E08685}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment3.Entities.Tests", "Assignment3.Entities.Tests\Assignment3.Entities.Tests.csproj", "{9861D336-585F-4926-A3D0-785D2B89B122}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment.Infrastructure.Tests", "Assignment.Infrastructure.Tests\Assignment.Infrastructure.Tests.csproj", "{9861D336-585F-4926-A3D0-785D2B89B122}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
