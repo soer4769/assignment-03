@@ -1,8 +1,5 @@
 namespace Assignment3.Entities.Tests;
 
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-
 public class UserRepositoryTests : IDisposable
 {
 

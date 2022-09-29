@@ -1,8 +1,6 @@
 namespace Assignment3.Entities;
 using System.ComponentModel.DataAnnotations;
 
-public enum State {New, Active, Resolved, Closed, Removed}
-
 public class Task
 {
     public int Id { get; set; }
@@ -16,6 +14,6 @@ public class Task
     
     public string? Description { get; set; }
 
-    public IEnumerable<Tag> Tags 
+    public IReadOnlyCollection<Tag> Tags 
     { get; set; } = null!;
 }

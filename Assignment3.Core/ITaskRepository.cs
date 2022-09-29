@@ -3,7 +3,7 @@
 public interface ITaskRepository
 {
     (Response Response, int TaskId) Create(TaskCreateDTO task);
-    IReadOnlyCollection<TaskDTO> ReadAll();
+    IQueryable<TaskDTO> ReadAll();
     IReadOnlyCollection<TaskDTO> ReadAllRemoved();
     IReadOnlyCollection<TaskDTO> ReadAllByTag(string tag);
     IReadOnlyCollection<TaskDTO> ReadAllByUser(int userId);
