@@ -17,17 +17,15 @@ public class WorkItemRepositoryTests : IDisposable
         builder.UseSqlite(connection);
         var context = new KanbanContext(builder.Options);
         context.Database.EnsureCreated();
-        
-        var user = new User {
+        context.Add(new User {
             Id = 1,
             Name = "Poul Poulsen",
             Email = "poul@thepoul.dk"
-        };
+        });
 
         var task = new WorkItem {Id = 1, Title = "Spaghetti", AssignedTo = context.Users.Find(1)};
         var task2 = new WorkItem {Id = 2, Title = "Meatballs", AssignedTo = context.Users.Find(1)};
 
-        context.Add(user);
         context.Add(task);
         context.Add(task2);
         context.SaveChanges();
@@ -55,10 +53,10 @@ public class WorkItemRepositoryTests : IDisposable
     public void Read_should_return_smth()
     {
         var actual = _repository.Read();
-
-        actual.ElementAt(0);
-        //actual.ElementAt(0).Equals(new WorkItemDTO(1, "Spaghetti", "Poul Poulsen", new List<string>(), State.New));
-        //actual.ElementAt(1).Equals(new WorkItemDTO(2, "Meatballs", "Poul Poulsen", new List<string>(), State.New));
+        actual.Should().BeEquivalentTo(new[]{
+            new WorkItemDTO(1, "Spaghetti", "Poul Poulsen", new List<string>().AsReadOnly(), State.New),
+            new WorkItemDTO(2, "Meatballs", "Poul Poulsen", new List<string>().AsReadOnly(), State.New)
+        });
     }
 
     public void Dispose()

@@ -8,14 +8,6 @@ public class WorkItemRepository : IWorkItemRepository
     {
         _context = context;
     }
-
-    private static IEnumerable<string> TagToString(IReadOnlyCollection<Tag> tags)
-    {
-        foreach (var tag in tags)
-        {
-            yield return tag.Name;
-        }
-    }
     
     public (Response Response, int WorkItemId) Create(WorkItemCreateDTO workItem)
     {
@@ -62,9 +54,9 @@ public class WorkItemRepository : IWorkItemRepository
     public IReadOnlyCollection<WorkItemDTO> Read()
     {
         var tasks = from t in _context.Tasks
-            select new WorkItemDTO(t.Id, t.Title, t.AssignedTo.Name, TagToString(t.Tags).ToList(), t.State);
+            select new WorkItemDTO(t.Id, t.Title, t.AssignedTo.Name,t.Tags.Select(x => x.Name).ToList(), t.State);
 
-        return tasks.ToList().AsReadOnly();
+        return tasks.ToList();
     }
 
     public Response Update(WorkItemUpdateDTO task)
@@ -79,6 +71,8 @@ public class WorkItemRepository : IWorkItemRepository
 
     public WorkItemDetailsDTO Find(int workItemId)
     {
-        throw new NotFiniteNumberException();
+        var workitem = from t in _context.Tasks where t.Id == workItemId 
+        select new WorkItemDetailsDTO(t.Id, t.Title, t.Description, t.created, t.AssignedTo.Name, t.Tags.Select(x => x.Name).ToList(), t.State, t.StateUpdated);
+        return workitem.First();
     }
 }
