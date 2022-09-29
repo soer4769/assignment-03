@@ -11,6 +11,6 @@ public class User
     
     public string Email { get; set; } = null!;
 
-    public IEnumerable<WorkItem> Tasks { get; set; } = null!;
+    public IEnumerable<WorkItem> Tasks { get; set; } = new List<WorkItem>();
 
 }

@@ -14,6 +14,9 @@ public class WorkItemRepository : IWorkItemRepository
         Response response;
         var entity = new WorkItem();
         var assignedUser = _context.Users.FirstOrDefault(u => u.Id == workItem.AssignedToId);
+
+        if(assignedUser == null) return (Response.BadRequest, 0);
+
         IReadOnlyCollection<Tag> tags = new List<Tag>();
         
         entity.Title = workItem.Title;
@@ -22,18 +25,21 @@ public class WorkItemRepository : IWorkItemRepository
         entity.AssignedTo = assignedUser;
         entity.Tags = tags;
 
-        var taskExists = _context.Tasks.FirstOrDefault(t => t.Id == entity.Id) != null;
+        var taskExists = _context.WorkItems.FirstOrDefault(t => t.Id == entity.Id) != null;
         
         if(taskExists)
         {
             return (Response.Conflict, 0);
         }
 
-        _context.Tasks.Add(entity);
+        entity.Created = DateTime.UtcNow;
+        entity.StateUpdated = DateTime.UtcNow;
+
+        _context.WorkItems.Add(entity);
         _context.SaveChanges();
 
         response = Response.Created;
-
+        
 
         return (response, entity.Id);
     }
@@ -45,23 +51,37 @@ public class WorkItemRepository : IWorkItemRepository
 
     public IReadOnlyCollection<WorkItemDTO> ReadByTag(string tag)
     {
-        return (from t in Read() where t.Tags.Contains(tag) select t).ToList();
+        var tagQuery = from t in Read()
+            where t.Tags.Contains(tag)
+            select t ;
+
+        return !tagQuery.Any() ? tagQuery.ToList() : null!;
     }
 
     public IReadOnlyCollection<WorkItemDTO> ReadByUser(int userId)
     {
-        return (from t in Read() where t.Id == userId select t).ToList();
+        var userQuery = from t in Read() where t.Id == userId select t;
+        
+        return !userQuery.Any() ? userQuery.ToList() : null!;
     }
 
     public IReadOnlyCollection<WorkItemDTO> ReadByState(State state)
     {
-        return (from t in Read() where t.State == state select t).ToList();
+        var stateQuery = from t in Read() where t.State == state select t;
+        
+        return !stateQuery.Any() ? stateQuery.ToList() : null!;
     }
     
     public IReadOnlyCollection<WorkItemDTO> Read()
     {
-        var tasks = from t in _context.Tasks
-            select new WorkItemDTO(t.Id, t.Title, t.AssignedTo.Name,t.Tags.Select(x => x.Name).ToList(), t.State);
+        if(!_context.WorkItems.Any())
+        {
+            return null!;
+        }
+
+
+        var tasks = from t in _context.WorkItems
+            select new WorkItemDTO(t.Id, t.Title, t.AssignedTo.Name, t.Tags.Select(x => x.Name).ToList(), t.State);
 
         return tasks.ToList();
     }
@@ -69,16 +89,22 @@ public class WorkItemRepository : IWorkItemRepository
     public Response Update(WorkItemUpdateDTO workitem)
     {
         
-        var entity = _context.Tasks.Find(workitem.Id);
+        var entity = _context.WorkItems.Find(workitem.Id);
         
         if(entity == null) return Response.NotFound;
         
         var assignedUser = _context.Users.FirstOrDefault(u => u.Id == workitem.AssignedToId);
+
+        if(assignedUser == null) return Response.BadRequest;
+
         entity.Title = workitem.Title;
         entity.Description = workitem.Description;
         entity.AssignedTo = assignedUser;
         entity.Tags = workitem.Tags.Select(x => new Tag {Name = x})
             .ToList();
+       
+        if(entity.State != workitem.State) entity.StateUpdated = DateTime.UtcNow;
+        
         entity.State = workitem.State;
         
         _context.SaveChanges();
@@ -88,29 +114,34 @@ public class WorkItemRepository : IWorkItemRepository
 
     public Response Delete(int workItemId)
     {
-        var workitem = _context.Users.FirstOrDefault(u => u.Id == workItemId);
+        var workitem = _context.WorkItems.FirstOrDefault(u => u.Id == workItemId);
         
         if(workitem == null)
         {
             return Response.NotFound;
         }
         
-        _context.Users.Remove(workitem);
+        if(workitem.State == State.New) _context.WorkItems.Remove(workitem);
+        else if (workitem.State == State.Active) {
+            workitem.State = State.Removed;
+            workitem.StateUpdated = DateTime.UtcNow;
+        }
+        else return Response.Conflict;
         
         return Response.Deleted;
     }
 
-    public WorkItemDetailsDTO Find(int workItemId)
+    public WorkItemDetailsDTO? Find(int workItemId)
     {
-        var taskNotExists = _context.Tasks.FirstOrDefault(t => t.Id == workItemId) == null;
+        var taskNotExists = _context.WorkItems.FirstOrDefault(t => t.Id == workItemId) == null;
 
         if (taskNotExists)
         {
-            return null!;
+            return null;
         }
         
-        var workitem = from t in _context.Tasks where t.Id == workItemId 
-        select new WorkItemDetailsDTO(t.Id, t.Title, t.Description, t.created, t.AssignedTo.Name, t.Tags.Select(x => x.Name).ToList(), t.State, t.StateUpdated);
+        var workitem = from t in _context.WorkItems where t.Id == workItemId 
+        select new WorkItemDetailsDTO(t.Id, t.Title, t.Description, t.Created, t.AssignedTo.Name, t.Tags.Select(x => x.Name).ToList(), t.State, t.StateUpdated);
         return workitem.First();
     }
 }
