@@ -15,7 +15,7 @@ public class WorkItemRepository : IWorkItemRepository
         var entity = new WorkItem();
         var assignedUser = _context.Users.FirstOrDefault(u => u.Id == workItem.AssignedToId);
 
-        if(assignedUser == null) return (Response.BadRequest, 0);
+        if(assignedUser == null && workItem.AssignedToId != null) return (Response.BadRequest, 0);
 
         IReadOnlyCollection<Tag> tags = new List<Tag>();
         
@@ -55,21 +55,21 @@ public class WorkItemRepository : IWorkItemRepository
             where t.Tags.Contains(tag)
             select t ;
 
-        return !tagQuery.Any() ? tagQuery.ToList() : null!;
+        return tagQuery.Any() ? tagQuery.ToList() : null!;
     }
 
     public IReadOnlyCollection<WorkItemDTO> ReadByUser(int userId)
     {
         var userQuery = from t in Read() where t.Id == userId select t;
         
-        return !userQuery.Any() ? userQuery.ToList() : null!;
+        return userQuery.Any() ? userQuery.ToList() : null!;
     }
 
     public IReadOnlyCollection<WorkItemDTO> ReadByState(State state)
     {
         var stateQuery = from t in Read() where t.State == state select t;
         
-        return !stateQuery.Any() ? stateQuery.ToList() : null!;
+        return stateQuery.Any() ? stateQuery.ToList() : null!;
     }
     
     public IReadOnlyCollection<WorkItemDTO> Read()
