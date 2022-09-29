@@ -16,6 +16,11 @@ public class UserRepository : IUserRepository
         entity.Email = user.Email;
         entity.Name = user.Name;
 
+        var userExists = _context.Users.FirstOrDefault(u => u.Email == user.Email) != null ? true : false;
+        if(userExists) 
+        {
+            return (Response.Conflict, 0);
+        }
         _context.Users.Add(entity);
         _context.SaveChanges();
 
@@ -28,6 +33,15 @@ public class UserRepository : IUserRepository
     public Response Delete(int userId, bool force = false)
     {
         var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+        if(user == null)
+        {
+            return Response.NotFound;
+        } 
+        bool AssignedToTask = false;
+        if(AssignedToTask && !force) 
+        {
+            return Response.Conflict;
+        }
         _context.Users.Remove(user!);
         return Response.Deleted;
     }
@@ -35,7 +49,7 @@ public class UserRepository : IUserRepository
     public UserDTO? Read(int userId)
     {
         var ReadUser = _context.Users.FirstOrDefault(u => u.Id == userId);
-        return new UserDTO(ReadUser.Id, ReadUser.Name, ReadUser.Email);
+        return ReadUser == null ? null : new UserDTO(ReadUser.Id, ReadUser.Name, ReadUser.Email);
     }
 
     public IReadOnlyCollection<UserDTO> ReadAll()
@@ -49,6 +63,7 @@ public class UserRepository : IUserRepository
     public Response Update(UserUpdateDTO user)
     {
         var entity = _context.Users.Find(user.Id);
+        if(entity == null) return Response.NotFound;
         entity.Name = user.Name;
         entity.Email = user.Email;
         _context.SaveChanges();
