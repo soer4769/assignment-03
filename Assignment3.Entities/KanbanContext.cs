@@ -39,7 +39,10 @@ public class KanbanContext : DbContext
 
         modelBuilder.Entity<Task>()
             .Property(t => t.State)
-            .IsRequired();
+            .IsRequired()
+            .HasConversion(
+                s => s.ToString(),
+                s => (State) Enum.Parse(typeof(State), s));
 
         modelBuilder.Entity<Tag>()
             .Property(t => t.Name)

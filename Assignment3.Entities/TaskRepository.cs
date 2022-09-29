@@ -39,12 +39,12 @@ public class TaskRepository : ITaskRepository
         return (response, entity.Id);
     }
 
-    public IQueryable<TaskDTO> ReadAll()
+    public IReadOnlyCollection<TaskDTO> ReadAll()
     {
         var tasks = from t in _context.Tasks
             select new TaskDTO(t.Id, t.Title, t.AssignedTo.Name, TagToString(t.Tags).ToList(), t.State);
 
-        return tasks;
+        return tasks.ToList().AsReadOnly();
     }
 
     public IReadOnlyCollection<TaskDTO> ReadAllRemoved()
