@@ -33,24 +33,24 @@ public class WorkItemRepository : IWorkItemRepository
 
     public IReadOnlyCollection<WorkItemDTO> ReadRemoved()
     {
-        return this.ReadByState(State.Removed);
+        return ReadByState(State.Removed);
     }
 
     public IReadOnlyCollection<WorkItemDTO> ReadByTag(string tag)
     {
-        return (from t in this.Read() where t.Tags.Contains(tag) select t).ToList();
+        return (from t in Read() where t.Tags.Contains(tag) select t).ToList();
     }
 
     public IReadOnlyCollection<WorkItemDTO> ReadByUser(int userId)
     {
-        return (from t in this.Read() where t.Id == userId select t).ToList();
+        return (from t in Read() where t.Id == userId select t).ToList();
     }
 
-    public IReadOnlyCollection<WorkItemDTO> ReadByState(Core.State state)
+    public IReadOnlyCollection<WorkItemDTO> ReadByState(State state)
     {
-        return (from t in this.Read() where t.State == state select t).ToList();
+        return (from t in Read() where t.State == state select t).ToList();
     }
-
+    
     public IReadOnlyCollection<WorkItemDTO> Read()
     {
         var tasks = from t in _context.Tasks
@@ -59,14 +59,30 @@ public class WorkItemRepository : IWorkItemRepository
         return tasks.ToList();
     }
 
-    public Response Update(WorkItemUpdateDTO task)
+    public Response Update(WorkItemUpdateDTO workitem)
     {
-        throw new NotImplementedException();
+        var updateQuery = _context.Tasks.FirstOrDefault(u => u.Id == workitem.Id);
+        
+        updateQuery!.State = State.Active;
+        updateQuery.Title = "what";
+
+        _context.Tasks.Update(updateQuery);
+        
+        return Response.Updated;
     }
 
-    public Response Delete(int taskId)
+    public Response Delete(int workItemId)
     {
-        throw new NotImplementedException();
+        var workitem = _context.Users.FirstOrDefault(u => u.Id == workItemId);
+        
+        if(workitem == null)
+        {
+            return Response.NotFound;
+        }
+        
+        _context.Users.Remove(workitem);
+        
+        return Response.Deleted;
     }
 
     public WorkItemDetailsDTO Find(int workItemId)

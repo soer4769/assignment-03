@@ -37,11 +37,13 @@ public class UserRepository : IUserRepository
         {
             return Response.NotFound;
         } 
+        
         bool AssignedToTask = false;
         if(AssignedToTask && !force) 
         {
             return Response.Conflict;
         }
+        
         _context.Users.Remove(user!);
         return Response.Deleted;
     }

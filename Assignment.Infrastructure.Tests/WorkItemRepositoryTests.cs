@@ -53,7 +53,7 @@ public class WorkItemRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void Read_should_return_smth()
+    public void Read_returns_id_1_and_2()
     {
         var actual = _repository.Read();
         actual.Should().BeEquivalentTo(new[]{
@@ -63,7 +63,7 @@ public class WorkItemRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void ReadRemoved_returns_meatballs()
+    public void ReadRemoved_returns_id_2()
     {
         var actual = _repository.ReadRemoved();
         actual.Should().BeEquivalentTo(new[]{
@@ -72,14 +72,14 @@ public class WorkItemRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void ReadByUser_returns_1()
+    public void ReadByUser_returns_id_1()
     {
         var actual = _repository.ReadByUser(1);
         actual.First().Id.Should().Be(1);
     }
 
     [Fact]
-    public void ReadByState_returns_new()
+    public void ReadByState_returns_id_1()
     {
         var actual = _repository.ReadByState(State.New);
         actual.Should().BeEquivalentTo(new[]{
@@ -88,7 +88,7 @@ public class WorkItemRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void ReadByTag_returns_1()
+    public void ReadByTag_returns_id_1()
     {
         var actual = _repository.ReadByTag("eat cake");
         actual.First().Id.Should().Be(1);
